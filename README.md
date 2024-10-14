@@ -1,50 +1,147 @@
-# Welcome to your Expo app 👋
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+# DermaVision AI
 
-## Get started
+**DermaVision AI** is a mobile application aimed at dermatologists and patients to help analyze skin lesions using AI. It allows patients to log in, book appointments with doctors, and potentially analyze skin lesions using AI tools. Dermatologists can log in, verify themselves, and manage their appointments with patients.
 
-1. Install dependencies
+## Table of Contents
+- [Features](#features)
+- [Technologies Used](#technologies-used)
+- [Installation](#installation)
+- [Running the Project](#running-the-project)
+- [Firebase Integration](#firebase-integration)
+- [Authentication](#authentication)
+- [Appointment Booking](#appointment-booking)
+- [Error Handling](#error-handling)
+- [Contributing](#contributing)
+- [License](#license)
 
+## Features
+- **User Authentication**: Supports email/password, Google, and Facebook authentication for both patients and doctors.
+- **Role-Based Access**: Patients and doctors can log in with different roles, granting them access to different features.
+- **Appointment Booking**: Patients can schedule appointments with dermatologists, and the appointments can be saved in Firestore and added to the device's calendar.
+- **Error Boundaries**: The app is equipped with error handling and displays appropriate error messages for better user experience.
+- **Firebase Integration**: Used for authentication, real-time database, and push notifications.
+
+## Technologies Used
+- **React Native**: Frontend framework for building cross-platform mobile applications.
+- **Expo SDK**: Used for simplifying development and testing.
+- **Firebase**: Authentication, Firestore, and push notifications backend.
+- **React Navigation**: Handles navigation and screen transitions.
+- **Yarn**: Package manager for dependency management.
+- **Error Boundaries**: Used to catch and display errors gracefully.
+- **TypeScript**: Ensures better type checking and code robustness.
+
+## Installation
+
+1. Clone the repository:
    ```bash
-   npm install
+   git clone https://github.com/devilsfave/project_x.git
    ```
 
-2. Start the app
-
+2. Navigate to the project directory:
    ```bash
-    npx expo start
+   cd project_x
    ```
 
-In the output, you'll find options to open the app in a
+3. Install dependencies:
+   ```bash
+   yarn install
+   ```
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+4. Install required Expo CLI globally if you haven't already:
+   ```bash
+   yarn global add expo-cli
+   ```
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+## Running the Project
 
-## Get a fresh project
+1. Start the Expo server:
+   ```bash
+   yarn start
+   ```
 
-When you're ready, run:
+2. Use the Expo Go app on your Android device or emulator to scan the QR code and view the app.
 
-```bash
-npm run reset-project
+3. For Android development, ensure you have an emulator running or an Android device connected.
+
+## Firebase Integration
+
+1. Set up a Firebase project on the [Firebase Console](https://console.firebase.google.com/).
+   
+2. Download the `google-services.json` file and place it in your project's `android/app` directory.
+
+3. Add Firebase configuration to your project. Make sure to follow Firebase setup guides for **Authentication**, **Firestore**, and **Push Notifications**.
+
+## Authentication
+
+The app supports email/password authentication, as well as social logins using Google and Facebook. 
+
+- **LoginScreen**: Users can log in with their credentials or social accounts.
+- **SignupScreen**: New users can sign up for an account.
+- **Role-Based Access**: Different UI is presented depending on whether the user is a **Patient** or **Doctor**.
+
+### Example code for email/password authentication:
+```javascript
+const handleLogin = async () => {
+  try {
+    await login(email, password, role); // role determines if the user is a Patient or Doctor
+    navigation.navigate('Home');
+  } catch (error) {
+    setError('Login failed. Please try again.');
+  }
+};
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## Appointment Booking
 
-## Learn more
+Patients can book appointments with doctors, and these appointments are saved in Firestore. The **BookAppointment** screen allows users to:
+- View available doctors.
+- Select a date and time for the appointment.
+- Save the appointment to Firestore and integrate with the device's calendar.
 
-To learn more about developing your project with Expo, look at the following resources:
+Example structure for booking appointments:
+```javascript
+const handleBookAppointment = async (doctorId, date, time) => {
+  try {
+    await firestore().collection('appointments').add({
+      doctorId,
+      patientId: user.uid,
+      date,
+      time,
+    });
+    // Add to calendar
+    addAppointmentToCalendar(date, time);
+    sendNotification(doctorId); // Optional: Send push notification to the doctor
+  } catch (error) {
+    console.error('Error booking appointment:', error);
+  }
+};
+```
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+## Error Handling
 
-## Join the community
+The app uses an `ErrorBoundary` component to catch and display errors. This ensures the app doesn't crash and shows a user-friendly message if something goes wrong.
 
-Join our community of developers creating universal apps.
+Example usage of an ErrorBoundary:
+```javascript
+import ErrorBoundary from './components/ErrorBoundary';
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+<ErrorBoundary>
+  <MainApp />
+</ErrorBoundary>
+```
+
+## Contributing
+
+We welcome contributions! Here's how you can help:
+1. Fork the repository.
+2. Create a new branch: `git checkout -b my-branch`.
+3. Make your changes and commit them: `git commit -m 'Feature description'`.
+4. Push to the branch: `git push origin my-branch`.
+5. Create a pull request.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+
